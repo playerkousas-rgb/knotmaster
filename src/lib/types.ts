@@ -73,6 +73,7 @@ export interface UserState {
     white: number
     gold: number
     rainbow: number
+    boss: number
   }
   obtainedCardIds: string[]
   leaderPasscodes: { code: string; createdAt: string }[]
