@@ -30,11 +30,11 @@ export function rollRarity(rng: () => number): RarityKey {
 export function packRules(pack: PackType): { pulls: number; minRarity: RarityKey } {
   switch (pack) {
     case 'white':
-      return { pulls: 3, minRarity: 'Basic' }
+      return { pulls: 1, minRarity: 'Basic' }
     case 'gold':
-      return { pulls: 4, minRarity: 'Rare' }
+      return { pulls: 1, minRarity: 'Rare' }
     case 'rainbow':
-      return { pulls: 5, minRarity: 'Epic' }
+      return { pulls: 1, minRarity: 'Epic' }
     case 'boss':
       return { pulls: 1, minRarity: 'Legendary' }
     default:
