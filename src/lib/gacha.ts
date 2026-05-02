@@ -1,31 +1,31 @@
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Box, Sparkles, Trophy, Flame } from 'lucide-react'
-import { PackType, PACK_IMAGES, packRules } from '../lib/gacha'
+import { PackType, PACK_IMAGES } from '../lib/gacha'
 
-// --- 修正型別定義，讓 boss 包合法化 ---
+// --- 修正 1: 強制要求 Inventory 必須包含 PackType 定義的所有類型 ---
 type Inventory = Record<PackType, number>
 
 const GachaPage: React.FC = () => {
-  // --- 關鍵修正：初始清單必須包含 boss，否則 build 會失敗 ---
+  // --- 修正 2: 初始狀態必須補上 boss，數值可以自己改 ---
   const [inventory, setInventory] = useState<Inventory>({
     white: 5,
     gold: 2,
     rainbow: 1,
-    boss: 1 // 每日 BOSS 獎勵包
+    boss: 1 // 新增的 BOSS 包數量
   })
 
   const [isOpening, setIsOpening] = useState(false)
   const [currentPack, setCurrentPack] = useState<PackType | null>(null)
 
   const handleOpenPack = (type: PackType) => {
-    // 第 81 行的修正位置：現在 type 'boss' 是合法的索引了
+    // 修復第 81 行的報錯：現在 type 'boss' 在 Inventory 索引中是合法的
     if (inventory[type] <= 0) return
 
     setCurrentPack(type)
     setIsOpening(true)
 
-    // 模擬抽卡動畫過程
+    // 模擬抽卡動畫
     setTimeout(() => {
       setInventory(prev => ({
         ...prev,
@@ -56,12 +56,12 @@ const GachaPage: React.FC = () => {
               type === 'boss' ? 'border-amber-500/50 shadow-lg shadow-amber-500/10' : 'border-white/10'
             }`}
           >
-            {/* 背景裝飾 */}
+            {/* 背景圖飾 */}
             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                {type === 'boss' ? <Flame size={80} /> : <Box size={80} />}
             </div>
 
-            {/* 卡包圖片 - 抓取我們在 lib/gacha.ts 定義的路徑 */}
+            {/* 卡包圖片 - 讀取你在 gacha.ts 定義的路徑 */}
             <div className="relative z-10 aspect-[3/4] mb-6 rounded-2xl overflow-hidden shadow-2xl">
               <img 
                 src={PACK_IMAGES[type]} 
@@ -70,7 +70,7 @@ const GachaPage: React.FC = () => {
               />
             </div>
 
-            {/* 資訊區 - 第 49 行修正位置 */}
+            {/* 資訊區 - 修復第 49 行的報錯 */}
             <div className="relative z-10">
               <h3 className="text-xl font-bold capitalize mb-1 flex items-center gap-2">
                 {type === 'boss' && <Trophy className="w-4 h-4 text-amber-500" />}
@@ -96,7 +96,7 @@ const GachaPage: React.FC = () => {
         ))}
       </main>
 
-      {/* 抽卡動畫 Overlay (簡化示意) */}
+      {/* 抽卡 Overlay 動畫 */}
       <AnimatePresence>
         {isOpening && (
           <motion.div 
