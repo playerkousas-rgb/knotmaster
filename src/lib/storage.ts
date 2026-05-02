@@ -17,7 +17,7 @@ export function loadUserState(): UserState {
     userId,
     role: 'member',
     streak: 0,
-    packs: { white: 0, gold: 0, rainbow: 0 },
+    packs: { white: 0, gold: 0, rainbow: 0, boss: 0 },
     obtainedCardIds: [],
     leaderPasscodes: [],
   }
