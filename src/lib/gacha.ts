@@ -1,14 +1,14 @@
 import type { CardRecord, RarityKey } from './types'
 import { rarityWeight, RARITY_ORDER } from './rarity'
 
-// 定義卡包類型，加入了 boss
+// 1. 定義四種卡包類型
 export type PackType = 'white' | 'gold' | 'rainbow' | 'boss'
 
-// 建立圖片對應表，對齊你 public 資料夾下的檔名
+// 2. 建立圖片路徑對照表 (對應你 public 資料夾裡的 PNG)
 export const PACK_IMAGES: Record<PackType, string> = {
   white: '/pack-white.png',
   gold: '/pack-gold.png',
-  rainbow: '/pack-rainbow.png', // 記得將檔名的空格刪除
+  rainbow: '/pack-rainbow.png',
   boss: '/pack-boss.png'
 }
 
@@ -27,7 +27,7 @@ export function rollRarity(rng: () => number): RarityKey {
   return weightedPick(RARITY_ORDER, weights, rng)
 }
 
-// 設定四種卡包的抽卡規則
+// 3. 設定四種卡包的抽卡規則
 export function packRules(pack: PackType): { pulls: number; minRarity: RarityKey } {
   switch (pack) {
     case 'white':
@@ -37,7 +37,7 @@ export function packRules(pack: PackType): { pulls: number; minRarity: RarityKey
     case 'rainbow':
       return { pulls: 5, minRarity: 'Epic' }
     case 'boss':
-      // BOSS 包設定：抽 1 張，保底 Legendary (傳奇)
+      // BOSS 包：設定為抽 1 張，且保底傳奇 (Legendary) 以上
       return { pulls: 1, minRarity: 'Legendary' }
     default:
       return { pulls: 3, minRarity: 'Basic' }
@@ -58,7 +58,7 @@ export function drawCard(
   
   if (pool.length > 0) return pool[Math.floor(rng() * pool.length)] as CardRecord
 
-  // fallback 邏輯保持不變
+  // 回退邏輯：如果該稀有度沒卡，找最接近的
   const idx = RARITY_ORDER.indexOf(targetRarity)
   for (let step = 1; step < RARITY_ORDER.length; step++) {
     const left = idx - step
