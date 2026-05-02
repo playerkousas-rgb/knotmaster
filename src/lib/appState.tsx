@@ -5,6 +5,7 @@ import { dateKey } from './utils'
 import { fetchCards, type NotionConfig } from './notion'
 import { applyObtained } from '../pages/CollectionPage'
 
+// 1. 在 AppCtx 型別定義中，補上 awarded.boss (雖然登入不一定送，但型別要對齊)
 type AppCtx = {
   cfg: NotionConfig
   setCfg: (cfg: NotionConfig) => void
@@ -14,7 +15,7 @@ type AppCtx = {
   loadingCards: boolean
   reloadCards: () => Promise<void>
   canViewAll: boolean
-  loginReward: () => { awarded: { white: number; gold: number; rainbow: number }; streak: number }
+  loginReward: () => { awarded: { white: number; gold: number; rainbow: number; boss: number }; streak: number }
   setRole: (role: Role) => void
 }
 
@@ -71,9 +72,11 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
 
   const canViewAll = user.role === 'leader' || user.role === 'super'
 
+  // 2. 在 loginReward 邏輯中補上 boss
   const loginReward = React.useCallback(() => {
     const todayKey = dateKey(new Date())
-    let awarded = { white: 0, gold: 0, rainbow: 0 }
+    // 預設登入獎勵增加 boss 欄位
+    let awarded = { white: 0, gold: 0, rainbow: 0, boss: 0 }
 
     setUser((prev) => {
       if (prev.lastLoginDate === todayKey) return prev
@@ -81,7 +84,13 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       const yesterdayKey = dateKey(new Date(Date.now() - 24 * 60 * 60 * 1000))
       const streak = prev.lastLoginDate === yesterdayKey ? prev.streak + 1 : 1
 
-      awarded = { white: 1, gold: streak % 7 === 0 ? 1 : 0, rainbow: streak % 30 === 0 ? 1 : 0 }
+      // 這裡你可以自行決定要不要透過登入送 BOSS 包，目前先設為 0
+      awarded = { 
+        white: 1, 
+        gold: streak % 7 === 0 ? 1 : 0, 
+        rainbow: streak % 30 === 0 ? 1 : 0,
+        boss: 0 
+      }
 
       return {
         ...prev,
@@ -91,6 +100,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
           white: prev.packs.white + awarded.white,
           gold: prev.packs.gold + awarded.gold,
           rainbow: prev.packs.rainbow + awarded.rainbow,
+          boss: (prev.packs.boss || 0) + awarded.boss, // 3. 確保這裡也處理 boss 數量的加總
         },
       }
     })
