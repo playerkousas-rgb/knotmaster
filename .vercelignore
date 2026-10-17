@@ -13,7 +13,23 @@
 # ─────────────────────────────────────────────────────────────────────────────
 
 # ── Version control & CI ─────────────────────────────────────────────────────
-.git
+# ⚠️  Do NOT exclude the whole ".git" directory.
+#     vercel.json's "ignoreCommand" runs `git diff` against the previously
+#     deployed commit, which needs .git/HEAD, .git/objects and .git/refs.
+#     Vercel applies this file BEFORE running the ignore command, so removing
+#     .git/HEAD makes git fail with "not a git repository" and the skip
+#     optimisation would silently never trigger. Only harmless metadata is
+#     excluded below.
+.git/config
+.git/description
+.git/FETCH_HEAD
+.git/ORIG_HEAD
+.git/index
+.git/packed-refs
+.git/hooks
+.git/logs
+.git/info
+
 .gitignore
 .gitattributes
 .github
