@@ -6,10 +6,10 @@ export type PackType = 'white' | 'gold' | 'rainbow' | 'boss'
 
 // 建立圖片路徑對照表
 export const PACK_IMAGES: Record<PackType, string> = {
-  white: '/pack-white.png',
-  gold: '/pack-gold.png',
-  rainbow: '/pack-rainbow.png',
-  boss: '/pack-boss.png'
+  white: '/pack-white.webp',
+  gold: '/pack-gold.webp',
+  rainbow: '/pack-rainbow.webp',
+  boss: '/pack-boss.webp'
 }
 
 function weightedPick<T>(items: T[], weights: number[], rng: () => number): T {
